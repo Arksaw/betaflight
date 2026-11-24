@@ -28,7 +28,12 @@
 
 #ifdef USE_TELEMETRY_CRSF
 
+#ifndef SIMULATOR_BUILD
 #include "build/atomic.h"
+#else
+// Single-threaded host stand-in for the Cortex-M BASEPRI block
+#define ATOMIC_BLOCK(prio) for (int atomicOnce_ = 1; atomicOnce_; atomicOnce_ = 0)
+#endif
 #include "build/build_config.h"
 #include "build/version.h"
 

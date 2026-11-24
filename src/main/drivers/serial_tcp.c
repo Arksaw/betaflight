@@ -257,6 +257,14 @@ void tcpDataIn(tcpPort_t *instance, uint8_t* ch, int size)
     tcpPort_t *s = (tcpPort_t *)instance;
     pthread_mutex_lock(&s->rxLock);
 
+    if (s->port.rxCallback) {
+        // Deliver bytes to callback-driven protocols (CRSF RX), as the UART ISR does
+        while (size--) {
+            s->port.rxCallback(*(ch++), s->port.rxCallbackData);
+        }
+        pthread_mutex_unlock(&s->rxLock);
+        return;
+    }
     while (size--) {
 //        printf("%c", *ch);
         s->port.rxBuffer[s->port.rxBufferHead] = *(ch++);

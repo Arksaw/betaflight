@@ -1066,3 +1066,10 @@ void uartPinConfigure(const serialPinConfig_t *pSerialPinConfig)
 {
     UNUSED(pSerialPinConfig);
 }
+
+// Host stubs needed once CRSF RX is compiled in
+#include "drivers/persistent.h"
+static uint32_t persistentObjects[PERSISTENT_OBJECT_COUNT];
+uint32_t persistentObjectRead(persistentObjectId_e id) { return persistentObjects[id]; }
+void persistentObjectWrite(persistentObjectId_e id, uint32_t value) { persistentObjects[id] = value; }
+timeUs_t microsISR(void) { return micros(); }
